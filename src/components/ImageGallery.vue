@@ -23,9 +23,7 @@
     import { supabase } from '../lib/supabase'
 
     const images = ref<string[]>([])
-    const loading = ref(true)
-
-    let intervalId: number | undefined
+    let intervalId: ReturnType<typeof setInterval>
 
     const loadImages = async () => {
         const { data, error } = await supabase.storage
