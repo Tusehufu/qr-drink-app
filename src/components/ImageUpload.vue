@@ -49,10 +49,5 @@
             alert('Fel vid uppladdning: ' + error.message)
             return
         }
-
-        const { data } = supabase.storage
-            .from('user-uploads')
-            .getPublicUrl(fileName)
-
     }
 </script>
