@@ -171,6 +171,18 @@
             description: 'Gin, Citronjuice, Thaibasilikasockerlag, Kokosskum',
             image: '/images/thai-basil.jpg',
         },
+        {
+            id: 13,
+            name: 'Southside',
+            description: 'Gin, Limejuice, Sockerlag, Mynta',
+            image: '/images/south-side.jpg',
+        },
+        {
+            id: 14,
+            name: 'Mojito',
+            description: 'Rom, Limejuice, Sockerlag, Sodavatten, Mynta',
+            image: '/images/mojito.jpg',
+        },
     ])
     const isAdmin = ref(false)
     const showAdminModal = ref(false)
