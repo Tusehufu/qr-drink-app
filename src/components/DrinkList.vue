@@ -99,7 +99,7 @@
         description: string
         image: string
         soldOut?: boolean
-        spirit: String
+        spirit: string
 
     }
 
