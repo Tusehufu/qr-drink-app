@@ -128,7 +128,7 @@
 
 
 <script setup lang="ts">
-    import { ref, onMounted, computed } from 'vue'
+    import { ref, onMounted, computed, nextTick } from 'vue'
     import { supabase } from '../lib/supabase'
 
     type Drink = {
@@ -341,20 +341,21 @@
     async function submitOrder() {
         if (!selectedDrink.value || !customerName.value) return
 
-        // Kontrollera blockering med återstående tid
+        // Kontrollera blockering med återstående tid (t.ex. efter fel svar)
         const blockedUntil = localStorage.getItem('nextOrderTime')
         if (blockedUntil && parseInt(blockedUntil) > Date.now()) {
             const minutesLeft = Math.ceil((parseInt(blockedUntil) - Date.now()) / 60000)
             orderFeedback.value = `Du är för full. Drick ett glas vatten och försök igen om ca ${minutesLeft} minut(er).`
             orderConfirmed.value = false
+
+            await nextTick() // ⬅ Se till att feedback visas innan modalen stängs
+
             setTimeout(() => {
                 orderFeedback.value = ''
                 closeOrderModal()
             }, 3000)
             return
         }
-
-
 
         // Hämta antal tidigare beställningar
         const { count, error: countError } = await supabase
@@ -366,7 +367,8 @@
             alert('Kunde inte kontrollera tidigare beställningar.')
             return
         }
-        // Kontrollera tid för första beställning
+
+        // Kontrollera tid för första beställning (30-minutersspärr)
         if (count !== null && count > 0) {
             const { data: firstOrder, error: firstOrderError } = await supabase
                 .from('orders')
@@ -386,6 +388,9 @@
                     const minutesLeft = Math.ceil((THIRTY_MINUTES - (now - firstOrderTime)) / 60000)
                     orderFeedback.value = `Du måste vänta ${minutesLeft} minut(er) innan du kan beställa igen.`
                     orderConfirmed.value = false
+
+                    await nextTick() // ⬅ Viktigt även här
+
                     setTimeout(() => {
                         orderFeedback.value = ''
                         closeOrderModal()
@@ -394,8 +399,9 @@
                 }
             }
         }
+
+        // Om fler än 1 tidigare beställning, visa fråga
         if (count !== null && count > 1) {
-            // Visa frågan i stället
             currentQuestion.value = questions[Math.floor(Math.random() * questions.length)]
             selectedAnswer.value = ''
             showOrderModal.value = false
@@ -403,8 +409,10 @@
             return
         }
 
+        // Slutligen: skicka in beställningen
         await finalizeOrder()
     }
+
 
 
 
