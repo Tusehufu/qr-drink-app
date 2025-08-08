@@ -386,12 +386,18 @@
                 const now = Date.now()
                 const THIRTY_MINUTES = 30 * 60 * 1000
 
+                // I spärr för 30 minuter
                 if (now - firstOrderTime < THIRTY_MINUTES) {
                     const minutesLeft = Math.ceil((THIRTY_MINUTES - (now - firstOrderTime)) / 60000)
+
+                    // 🔒 Sätt spärrtid så den inte försvinner vid reload
+                    localStorage.setItem('nextOrderTime', (firstOrderTime + THIRTY_MINUTES).toString())
+
+                    showOrderModal.value = true
                     orderFeedback.value = `Du måste vänta ${minutesLeft} minut(er) innan du kan beställa igen.`
                     orderConfirmed.value = false
 
-                    await nextTick() // ⬅ Viktigt även här
+                    await nextTick()
 
                     setTimeout(() => {
                         orderFeedback.value = ''
@@ -399,6 +405,8 @@
                     }, 3000)
                     return
                 }
+
+
             }
         }
 
