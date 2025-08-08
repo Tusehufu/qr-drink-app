@@ -102,107 +102,115 @@
         spirit: string
 
     }
-
-    const drinks = ref<Drink[]>([
-        {
-            id: 1,
-            name: 'The Bicycle Thief',
-            description: 'Gin, Campari, Grapefruktjuice, Citronjuice, Sockerlag, Sodavatten',
-            image: '/images/the-bicycle-thief.jpg',
-            spirit: 'Gin',
-        },
-        {
-            id: 2,
-            name: 'Pornstar Martini',
-            description: 'Vodka, Passionsfruktslikör, Sockerlag, Limejuice',
-            image: '/images/pornstar-martini.jpg',
-            spirit: 'Vodka',
-        },
-        {
-            id: 3,
-            name: 'Gin Fizz',
-            description: 'Gin, citronjuice, sockerlag, äggvita, sodavatten',
-            image: '/images/gin-fizz.jpg',
-            spirit: 'Gin',
-        },
-        {
-            id: 4,
-            name: 'Spicy Margarita',
-            description: 'Tequila, Triple sec, Limejuice, AgaveSirap',
-            image: '/images/spicy-margarita.jpg',
-            spirit: 'Tequila',
-        },
-        {
-            id: 5,
-            name: 'Fizzypop',
-            description: 'Vodka, Blå Curaçao, Monin BubblegumSirap, Citronjuice, 7up',
-            image: '/images/fizzy-pop.jpg',
-            spirit: 'Vodka',
-        },
-        {
-            id: 6,
-            name: 'Midori Sour',
-            description: 'Vodka, Midori, Citronjuice, Limejuice, Sodavatten',
-            image: '/images/midori-sour.jpg',
-            spirit: 'Vodka',
-        },
-        {
-            id: 7,
-            name: 'Tom Collins',
-            description: 'Gin, Citronjuice, Sockerlag, Sodavatten',
-            image: '/images/tom-collins.jpg',
-            spirit: 'Gin',
-        },
-        {
-            id: 8,
-            name: 'Margarita',
-            description: 'Tequila, Triple sec, Limejuice, Sockerlag',
-            image: '/images/margarita.jpg',
-            spirit: 'Tequila',
-        },
-        {
-            id: 9,
-            name: 'Caipirinha',
-            description: 'Cachaça, Lime, Socker',
-            image: '/images/caipirinha.jpg',
-            spirit: 'Rom',
-        },
-        {
-            id: 10,
-            name: 'Kiwi Caipirinha',
-            description: 'Cachaça, Lime, Socker, Kiwi',
-            image: '/images/kiwi-caipirinha.jpg',
-            spirit: 'Rom',
-        },
-        {
-            id: 11,
-            name: 'Aperol Spritz',
-            description: 'Aperol, Bubbel, Sodavatten',
-            image: '/images/aperol-spritz.jpg',
-            spirit: 'Aperol',
-        },
-        {
-            id: 12,
-            name: 'Thai Basil',
-            description: 'Gin, Citronjuice, Thaibasilikasockerlag, Kokosskum',
-            image: '/images/thai-basil.jpg',
-            spirit: 'Gin',
-        },
-        {
-            id: 13,
-            name: 'Southside',
-            description: 'Gin, Limejuice, Sockerlag, Mynta',
-            image: '/images/south-side.jpg',
-            spirit: 'Gin',
-        },
-        {
-            id: 14,
-            name: 'Mojito',
-            description: 'Rom, Limejuice, Sockerlag, Sodavatten, Mynta',
-            image: '/images/mojito.jpg',
-            spirit: 'Rom',
-        },
-    ])
+    const drinks = ref<Drink[]>([])
+    async function loadDrinks() {
+        const { data, error } = await supabase.from('drinks').select('*')
+        if (error) {
+            console.error('Fel vid hämtning av drinkar:', error.message)
+            return
+        }
+        drinks.value = data
+    }
+    //const drinks = ref<Drink[]>([
+    //    {
+    //        id: 1,
+    //        name: 'The Bicycle Thief',
+    //        description: 'Gin, Campari, Grapefruktjuice, Citronjuice, Sockerlag, Sodavatten',
+    //        image: '/images/the-bicycle-thief.jpg',
+    //        spirit: 'Gin',
+    //    },
+    //    {
+    //        id: 2,
+    //        name: 'Pornstar Martini',
+    //        description: 'Vodka, Passionsfruktslikör, Sockerlag, Limejuice',
+    //        image: '/images/pornstar-martini.jpg',
+    //        spirit: 'Vodka',
+    //    },
+    //    {
+    //        id: 3,
+    //        name: 'Gin Fizz',
+    //        description: 'Gin, citronjuice, sockerlag, äggvita, sodavatten',
+    //        image: '/images/gin-fizz.jpg',
+    //        spirit: 'Gin',
+    //    },
+    //    {
+    //        id: 4,
+    //        name: 'Spicy Margarita',
+    //        description: 'Tequila, Triple sec, Limejuice, AgaveSirap',
+    //        image: '/images/spicy-margarita.jpg',
+    //        spirit: 'Tequila',
+    //    },
+    //    {
+    //        id: 5,
+    //        name: 'Fizzypop',
+    //        description: 'Vodka, Blå Curaçao, Monin BubblegumSirap, Citronjuice, 7up',
+    //        image: '/images/fizzy-pop.jpg',
+    //        spirit: 'Vodka',
+    //    },
+    //    {
+    //        id: 6,
+    //        name: 'Midori Sour',
+    //        description: 'Vodka, Midori, Citronjuice, Limejuice, Sodavatten',
+    //        image: '/images/midori-sour.jpg',
+    //        spirit: 'Vodka',
+    //    },
+    //    {
+    //        id: 7,
+    //        name: 'Tom Collins',
+    //        description: 'Gin, Citronjuice, Sockerlag, Sodavatten',
+    //        image: '/images/tom-collins.jpg',
+    //        spirit: 'Gin',
+    //    },
+    //    {
+    //        id: 8,
+    //        name: 'Margarita',
+    //        description: 'Tequila, Triple sec, Limejuice, Sockerlag',
+    //        image: '/images/margarita.jpg',
+    //        spirit: 'Tequila',
+    //    },
+    //    {
+    //        id: 9,
+    //        name: 'Caipirinha',
+    //        description: 'Cachaça, Lime, Socker',
+    //        image: '/images/caipirinha.jpg',
+    //        spirit: 'Rom',
+    //    },
+    //    {
+    //        id: 10,
+    //        name: 'Kiwi Caipirinha',
+    //        description: 'Cachaça, Lime, Socker, Kiwi',
+    //        image: '/images/kiwi-caipirinha.jpg',
+    //        spirit: 'Rom',
+    //    },
+    //    {
+    //        id: 11,
+    //        name: 'Aperol Spritz',
+    //        description: 'Aperol, Bubbel, Sodavatten',
+    //        image: '/images/aperol-spritz.jpg',
+    //        spirit: 'Aperol',
+    //    },
+    //    {
+    //        id: 12,
+    //        name: 'Thai Basil',
+    //        description: 'Gin, Citronjuice, Thaibasilikasockerlag, Kokosskum',
+    //        image: '/images/thai-basil.jpg',
+    //        spirit: 'Gin',
+    //    },
+    //    {
+    //        id: 13,
+    //        name: 'Southside',
+    //        description: 'Gin, Limejuice, Sockerlag, Mynta',
+    //        image: '/images/south-side.jpg',
+    //        spirit: 'Gin',
+    //    },
+    //    {
+    //        id: 14,
+    //        name: 'Mojito',
+    //        description: 'Rom, Limejuice, Sockerlag, Sodavatten, Mynta',
+    //        image: '/images/mojito.jpg',
+    //        spirit: 'Rom',
+    //    },
+    //])
     const isAdmin = ref(false)
     const showAdminModal = ref(false)
     const adminPasswordInput = ref('')
@@ -226,6 +234,13 @@
 
     onMounted(() => {
         isAdmin.value = localStorage.getItem('isAdmin') === 'true'
+        loadDrinks()
+        setInterval(() => {
+            if (!isAdmin.value) {
+                loadDrinks()
+            }
+        }, 5000)
+
     })
 
     function verifyAdmin() {
@@ -238,14 +253,24 @@
             alert('Fel lösenord')
         }
     }
-
-    function markSoldOut(drink: Drink) {
-        drink.soldOut = true
+    async function markSoldOut(drink: Drink) {
+        const { error } = await supabase.from('drinks').update({ soldOut: true }).eq('id', drink.id)
+        if (!error) await loadDrinks()
     }
 
-    function restoreDrink(drink: Drink) {
-        drink.soldOut = false
+    async function restoreDrink(drink: Drink) {
+        const { error } = await supabase.from('drinks').update({ soldOut: false }).eq('id', drink.id)
+        if (!error) await loadDrinks()
     }
+
+
+    //function markSoldOut(drink: Drink) {
+    //    drink.soldOut = true
+    //}
+
+    //function restoreDrink(drink: Drink) {
+    //    drink.soldOut = false
+    //}
 
     function orderDrink(drink: Drink) {
         if (drink.soldOut) return
