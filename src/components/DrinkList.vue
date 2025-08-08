@@ -2,7 +2,7 @@
     <div>
         <button class="btn btn-outline-secondary position-fixed bottom-0 end-0 m-3 z-3"
                 @click="showAdminModal = true">
-            Admine
+            Admins
         </button>
         <div class="modal fade show d-block" tabindex="-1" role="dialog" v-if="showAdminModal">
             <div class="modal-dialog" role="document">
@@ -308,27 +308,26 @@
         if (selectedAnswer.value === currentQuestion.value.correctAnswer) {
             showQuestionModal.value = false
             orderConfirmed.value = true
+            showOrderModal.value = true  // ✅ Visa modalen
             await finalizeOrder()
         } else {
-            // ⛔ Användaren svarade fel → blockera i 15 min
             const blockTime = 15 * 60 * 1000
             localStorage.setItem('nextOrderTime', (Date.now() + blockTime).toString())
 
             showQuestionModal.value = false
 
-            // 💬 Visa rätt meddelande i beställningsmodale
             const minutesLeft = Math.ceil(blockTime / 60000)
             orderFeedback.value = `Du är för full. Drick ett glas vatten och försök igen om ca ${minutesLeft} minut(er).`
             orderConfirmed.value = false
             showOrderModal.value = true
 
-            // ⏳ Stäng modalen automatiskt efter 3 sekunder
             setTimeout(() => {
                 orderFeedback.value = ''
                 closeOrderModal()
             }, 3000)
         }
     }
+
 
     async function finalizeOrder() {
         //const { error } = await supabase.from('orders').insert([
