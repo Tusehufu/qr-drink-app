@@ -330,18 +330,18 @@
 
 
     async function finalizeOrder() {
-        //const { error } = await supabase.from('orders').insert([
-        //    {
-        //        drink_id: selectedDrink.value!.id,
-        //        drink_name: selectedDrink.value!.name,
-        //        customer: customerName.value,
-        //    },
-        //])
+        const { error } = await supabase.from('orders').insert([
+            {
+                drink_id: selectedDrink.value!.id,
+                drink_name: selectedDrink.value!.name,
+                customer: customerName.value,
+            },
+        ])
 
-        //if (error) {
-        //    alert('Fel vid beställning: ' + error.message)
-        //    return
-        //}
+        if (error) {
+            alert('Fel vid beställning: ' + error.message)
+            return
+        }
 
         orderConfirmed.value = true
         // ⚠️ Endast sätt spärrtid om det inte redan finns en
