@@ -289,7 +289,6 @@
     function closeOrderModal() {
         showOrderModal.value = false
         selectedDrink.value = null
-        customerName.value = ''
         orderConfirmed.value = false
     }
     function confirmName() {
