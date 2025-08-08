@@ -282,9 +282,9 @@
     function orderDrink(drink: Drink) {
         if (drink.soldOut || !customerName.value) return
         selectedDrink.value = drink
-        showOrderModal.value = true
         submitOrder()
     }
+
 
     function closeOrderModal() {
         showOrderModal.value = false
@@ -341,14 +341,16 @@
     async function submitOrder() {
         if (!selectedDrink.value || !customerName.value) return
 
-        // Kontrollera blockering med återstående tid (t.ex. efter fel svar)
+        showOrderModal.value = true // ✅ Öppna modalen först *efter* selectedDrink är satt
+
+        // Kontrollera blockering med återstående tid
         const blockedUntil = localStorage.getItem('nextOrderTime')
         if (blockedUntil && parseInt(blockedUntil) > Date.now()) {
             const minutesLeft = Math.ceil((parseInt(blockedUntil) - Date.now()) / 60000)
             orderFeedback.value = `Du är för full. Drick ett glas vatten och försök igen om ca ${minutesLeft} minut(er).`
             orderConfirmed.value = false
 
-            await nextTick() // ⬅ Se till att feedback visas innan modalen stängs
+            await nextTick()
 
             setTimeout(() => {
                 orderFeedback.value = ''
