@@ -318,18 +318,18 @@
         }
     }
     async function finalizeOrder() {
-        const { error } = await supabase.from('orders').insert([
-            {
-                drink_id: selectedDrink.value!.id,
-                drink_name: selectedDrink.value!.name,
-                customer: customerName.value,
-            },
-        ])
+        //const { error } = await supabase.from('orders').insert([
+        //    {
+        //        drink_id: selectedDrink.value!.id,
+        //        drink_name: selectedDrink.value!.name,
+        //        customer: customerName.value,
+        //    },
+        //])
 
-        if (error) {
-            alert('Fel vid beställning: ' + error.message)
-            return
-        }
+        //if (error) {
+        //    alert('Fel vid beställning: ' + error.message)
+        //    return
+        //}
 
         orderConfirmed.value = true
         // ⚠️ Endast sätt spärrtid om det inte redan finns en
@@ -347,8 +347,6 @@
     async function submitOrder() {
         if (!selectedDrink.value || !customerName.value) return
 
-        showOrderModal.value = true // ✅ Öppna modalen först *efter* selectedDrink är satt
-
         // Kontrollera blockering med återstående tid
         const blockedUntil = localStorage.getItem('nextOrderTime')
         if (blockedUntil && parseInt(blockedUntil) > Date.now()) {
@@ -356,6 +354,7 @@
             orderFeedback.value = `Du är för full. Drick ett glas vatten och försök igen om ca ${minutesLeft} minut(er).`
             orderConfirmed.value = false
 
+            showOrderModal.value = true
             await nextTick()
 
             setTimeout(() => {
@@ -392,17 +391,13 @@
                 const now = Date.now()
                 const THIRTY_MINUTES = 30 * 60 * 1000
 
-                // I spärr för 30 minuter
                 if (now - firstOrderTime < THIRTY_MINUTES) {
                     const minutesLeft = Math.ceil((THIRTY_MINUTES - (now - firstOrderTime)) / 60000)
-
-                    // 🔒 Sätt spärrtid så den inte försvinner vid reload
                     localStorage.setItem('nextOrderTime', (firstOrderTime + THIRTY_MINUTES).toString())
 
-                    showOrderModal.value = true
                     orderFeedback.value = `Du måste vänta ${minutesLeft} minut(er) innan du kan beställa igen.`
                     orderConfirmed.value = false
-
+                    showOrderModal.value = true
                     await nextTick()
 
                     setTimeout(() => {
@@ -411,8 +406,6 @@
                     }, 3000)
                     return
                 }
-
-
             }
         }
 
@@ -420,14 +413,15 @@
         if (count !== null && count > 1) {
             currentQuestion.value = questions[Math.floor(Math.random() * questions.length)]
             selectedAnswer.value = ''
-            showOrderModal.value = false
             showQuestionModal.value = true
             return
         }
 
         // Slutligen: skicka in beställningen
+        showOrderModal.value = true
         await finalizeOrder()
     }
+
 
 
 
