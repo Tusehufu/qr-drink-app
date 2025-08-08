@@ -2,7 +2,7 @@
     <div>
         <button class="btn btn-outline-secondary position-fixed bottom-0 end-0 m-3 z-3"
                 @click="showAdminModal = true">
-            Admin
+            Adminz
         </button>
         <div class="modal fade show d-block" tabindex="-1" role="dialog" v-if="showAdminModal">
             <div class="modal-dialog" role="document">
