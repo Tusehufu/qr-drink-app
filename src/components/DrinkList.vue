@@ -332,6 +332,12 @@
         }
 
         orderConfirmed.value = true
+        // ⚠️ Endast sätt spärrtid om det inte redan finns en
+        if (!localStorage.getItem('nextOrderTime')) {
+            const THIRTY_MINUTES = 30 * 60 * 1000
+            const futureBlockTime = Date.now() + THIRTY_MINUTES
+            localStorage.setItem('nextOrderTime', futureBlockTime.toString())
+        }
 
         setTimeout(() => {
             closeOrderModal()
