@@ -21,26 +21,64 @@
                 </div>
             </div>
         </div>
+        <!-- Frågemodal -->
+        <div class="modal fade show d-block" tabindex="-1" v-if="showQuestionModal">
+            <div class="modal-dialog">
+                <div class="modal-content border">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Fyllekontroll</h5>
+                    </div>
+                    <div class="modal-body">
+                        <p>{{ currentQuestion?.question }}</p>
+                        <div class="form-check" v-for="option in currentQuestion?.options" :key="option">
+                            <input class="form-check-input"
+                                   type="radio"
+                                   :id="option"
+                                   :value="option"
+                                   v-model="selectedAnswer" />
+                            <label class="form-check-label" :for="option">{{ option }}</label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" @click="submitQuestionAnswer" :disabled="!selectedAnswer">Skicka svar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade show d-block" tabindex="-1" v-if="showNameModal">
+            <div class="modal-dialog">
+                <div class="modal-content border">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Välkommen!</h5>
+                    </div>
+                    <div class="modal-body">
+                        <input v-model="customerNameInput" class="form-control" placeholder="Ange ditt namn" />
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" @click="confirmName">Fortsätt</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- Beställningsmodal -->
         <div class="modal fade show d-block" tabindex="-1" v-if="showOrderModal">
             <div class="modal-dialog">
                 <div class="modal-content border">
                     <div class="modal-header">
-                        <h5 class="modal-title">Ange ditt namn</h5>
-                        <button type="button" class="btn-close" @click="closeOrderModal()"></button>
+                        <h5 class="modal-title">Beställning</h5>
+                        <button type="button" class="btn-close" @click="closeOrderModal"></button>
                     </div>
-                    <div class="modal-body">
-                        <div v-if="!orderConfirmed">
-                            <input v-model="customerName" class="form-control" placeholder="Ditt namn" />
+                    <div class="modal-body text-center">
+                        <div v-if="!orderConfirmed && !orderFeedback">
+                            <p>Skickar beställning...</p>
                         </div>
-                        <div v-else class="text-center">
+                        <div v-if="orderFeedback">
+                            <p class="fw-bold text-danger">{{ orderFeedback }}</p>
+                        </div>
+                        <div v-else-if="orderConfirmed">
                             <p class="fw-bold">Beställning mottagen! 🥳</p>
                             <p>Glöm inte att lämna in ditt glas!</p>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-secondary" @click="closeOrderModal()">Avbryt</button>
-                        <button class="btn btn-primary" @click="submitOrder()">Skicka beställning</button>
                     </div>
                 </div>
             </div>
@@ -111,106 +149,68 @@
         }
         drinks.value = data
     }
-    //const drinks = ref<Drink[]>([
-    //    {
-    //        id: 1,
-    //        name: 'The Bicycle Thief',
-    //        description: 'Gin, Campari, Grapefruktjuice, Citronjuice, Sockerlag, Sodavatten',
-    //        image: '/images/the-bicycle-thief.jpg',
-    //        spirit: 'Gin',
-    //    },
-    //    {
-    //        id: 2,
-    //        name: 'Pornstar Martini',
-    //        description: 'Vodka, Passionsfruktslikör, Sockerlag, Limejuice',
-    //        image: '/images/pornstar-martini.jpg',
-    //        spirit: 'Vodka',
-    //    },
-    //    {
-    //        id: 3,
-    //        name: 'Gin Fizz',
-    //        description: 'Gin, citronjuice, sockerlag, äggvita, sodavatten',
-    //        image: '/images/gin-fizz.jpg',
-    //        spirit: 'Gin',
-    //    },
-    //    {
-    //        id: 4,
-    //        name: 'Spicy Margarita',
-    //        description: 'Tequila, Triple sec, Limejuice, AgaveSirap',
-    //        image: '/images/spicy-margarita.jpg',
-    //        spirit: 'Tequila',
-    //    },
-    //    {
-    //        id: 5,
-    //        name: 'Fizzypop',
-    //        description: 'Vodka, Blå Curaçao, Monin BubblegumSirap, Citronjuice, 7up',
-    //        image: '/images/fizzy-pop.jpg',
-    //        spirit: 'Vodka',
-    //    },
-    //    {
-    //        id: 6,
-    //        name: 'Midori Sour',
-    //        description: 'Vodka, Midori, Citronjuice, Limejuice, Sodavatten',
-    //        image: '/images/midori-sour.jpg',
-    //        spirit: 'Vodka',
-    //    },
-    //    {
-    //        id: 7,
-    //        name: 'Tom Collins',
-    //        description: 'Gin, Citronjuice, Sockerlag, Sodavatten',
-    //        image: '/images/tom-collins.jpg',
-    //        spirit: 'Gin',
-    //    },
-    //    {
-    //        id: 8,
-    //        name: 'Margarita',
-    //        description: 'Tequila, Triple sec, Limejuice, Sockerlag',
-    //        image: '/images/margarita.jpg',
-    //        spirit: 'Tequila',
-    //    },
-    //    {
-    //        id: 9,
-    //        name: 'Caipirinha',
-    //        description: 'Cachaça, Lime, Socker',
-    //        image: '/images/caipirinha.jpg',
-    //        spirit: 'Rom',
-    //    },
-    //    {
-    //        id: 10,
-    //        name: 'Kiwi Caipirinha',
-    //        description: 'Cachaça, Lime, Socker, Kiwi',
-    //        image: '/images/kiwi-caipirinha.jpg',
-    //        spirit: 'Rom',
-    //    },
-    //    {
-    //        id: 11,
-    //        name: 'Aperol Spritz',
-    //        description: 'Aperol, Bubbel, Sodavatten',
-    //        image: '/images/aperol-spritz.jpg',
-    //        spirit: 'Aperol',
-    //    },
-    //    {
-    //        id: 12,
-    //        name: 'Thai Basil',
-    //        description: 'Gin, Citronjuice, Thaibasilikasockerlag, Kokosskum',
-    //        image: '/images/thai-basil.jpg',
-    //        spirit: 'Gin',
-    //    },
-    //    {
-    //        id: 13,
-    //        name: 'Southside',
-    //        description: 'Gin, Limejuice, Sockerlag, Mynta',
-    //        image: '/images/south-side.jpg',
-    //        spirit: 'Gin',
-    //    },
-    //    {
-    //        id: 14,
-    //        name: 'Mojito',
-    //        description: 'Rom, Limejuice, Sockerlag, Sodavatten, Mynta',
-    //        image: '/images/mojito.jpg',
-    //        spirit: 'Rom',
-    //    },
-    //])
+    const showQuestionModal = ref(false)
+    const selectedAnswer = ref('')
+    const currentQuestion = ref<{ question: string; options: string[]; correctAnswer: string } | null>(null)
+
+    const questions = [
+        {
+            question: "Du går norrut, sen vänster, sen vänster igen. Vilket håll går du nu?",
+            options: ["Söder", "Väster", "Öster", "Norr"],
+            correctAnswer: "Söder",
+        },
+        {
+            question: "En drink kostar 49 kr. Vad kostar 3 drinkar?",
+            options: ["147", "150", "148", "144"],
+            correctAnswer: "147"
+        },
+        {
+            question: "Vad är nästa tal i serien: 2, 4, 8, 16, ...?",
+            options: ["18", "24", "32", "30"],
+            correctAnswer: "32",
+        },
+        {
+            question: "Om ett flygplan kraschar på gränsen mellan Sverige och Norge, var begraver man överlevande?",
+            options: ["Sverige", "Norge", "På gränsen", "Ingenstans"],
+            correctAnswer: "Ingenstans",
+        },
+        {
+            question: "Hur många bokstäver finns i alfabetet?",
+            options: ["28", "29", "26", "30"],
+            correctAnswer: "29",
+        },
+        {
+            question: "Vilken siffra kommer härnäst? 1, 1, 2, 3, 5, 8, ?",
+            options: ["11", "13", "10", "14"],
+            correctAnswer: "13", 
+        },
+        {
+            question: "Vilken planet är närmast solen?",
+            options: ["Venus", "Jorden", "Merkurius", "Mars"],
+            correctAnswer: "Merkurius",
+        },
+        {
+            question: "Hur många kanter har ett stoppskylt (standard i Sverige)?",
+            options: ["6", "8", "7", "10"],
+            correctAnswer: "8", 
+        },
+        {
+            question: "Vad får du om du adderar alla siffror i årtalet 2025?",
+            options: ["9", "7", "11", "10"],
+            correctAnswer: "9", 
+        },
+        {
+            question: "Pelles mamma har fyra söner. De heter Nord, Väst och Syd. Vad heter den fjärde?",
+            options: ["Öst", "Norr", "Det står inte", "Pelle"],
+            correctAnswer: "Pelle",
+        },
+        {
+            question: "Om 5 maskiner tar 5 minuter att göra 5 produkter, hur lång tid tar det för 100 maskiner att göra 100 produkter?",
+            options: ["5 minuter", "100 minuter", "10 minuter", "1 minut"],
+            correctAnswer: "5 minuter",
+        },
+    ]
+
     const isAdmin = ref(false)
     const showAdminModal = ref(false)
     const adminPasswordInput = ref('')
@@ -219,6 +219,9 @@
     const selectedDrink = ref<Drink | null>(null)
     const customerName = ref('')
     const orderConfirmed = ref(false)
+    const customerNameInput = ref('')
+    const showNameModal = ref(false)
+    const orderFeedback = ref('')
 
     const groupedDrinks = computed(() => {
         const groups: Record<string, Drink[]> = {}
@@ -234,13 +237,17 @@
 
     onMounted(() => {
         isAdmin.value = localStorage.getItem('isAdmin') === 'true'
+        const storedName = localStorage.getItem('customerName')
+        if (storedName) {
+            customerName.value = storedName
+        } else {
+            showNameModal.value = true
+        }
+
         loadDrinks()
         setInterval(() => {
-            if (!isAdmin.value) {
-                loadDrinks()
-            }
+            if (!isAdmin.value) loadDrinks()
         }, 5000)
-
     })
 
     function verifyAdmin() {
@@ -273,10 +280,10 @@
     //}
 
     function orderDrink(drink: Drink) {
-        if (drink.soldOut) return
+        if (drink.soldOut || !customerName.value) return
         selectedDrink.value = drink
-        customerName.value = ''
         showOrderModal.value = true
+        submitOrder()
     }
 
     function closeOrderModal() {
@@ -285,19 +292,37 @@
         customerName.value = ''
         orderConfirmed.value = false
     }
-
-
-    async function submitOrder() {
-        if (!selectedDrink.value || customerName.value.trim() === '') {
+    function confirmName() {
+        const trimmed = customerNameInput.value.trim()
+        if (trimmed.length < 2) {
             alert('Vänligen fyll i ditt namn')
             return
         }
+        customerName.value = trimmed
+        localStorage.setItem('customerName', trimmed)
+        showNameModal.value = false
+    }
 
+    async function submitQuestionAnswer() {
+        if (!currentQuestion.value || !selectedAnswer.value) return
+
+        if (selectedAnswer.value === currentQuestion.value.correctAnswer) {
+            showQuestionModal.value = false
+            orderConfirmed.value = true
+            await finalizeOrder()
+        } else {
+            alert('Fel svar! Du är blockerad i 15 minuter.')
+            localStorage.setItem('nextOrderTime', (Date.now() + 15 * 60 * 1000).toString())
+            showQuestionModal.value = false
+            closeOrderModal()
+        }
+    }
+    async function finalizeOrder() {
         const { error } = await supabase.from('orders').insert([
             {
-                drink_id: selectedDrink.value.id,
-                drink_name: selectedDrink.value.name,
-                customer: customerName.value.trim(),
+                drink_id: selectedDrink.value!.id,
+                drink_name: selectedDrink.value!.name,
+                customer: customerName.value,
             },
         ])
 
@@ -308,11 +333,79 @@
 
         orderConfirmed.value = true
 
-        // Vänta 3 sekunder, stäng modalen
         setTimeout(() => {
             closeOrderModal()
         }, 3000)
     }
+
+    async function submitOrder() {
+        if (!selectedDrink.value || !customerName.value) return
+
+        // Kontrollera blockering med återstående tid
+        const blockedUntil = localStorage.getItem('nextOrderTime')
+        if (blockedUntil && parseInt(blockedUntil) > Date.now()) {
+            const minutesLeft = Math.ceil((parseInt(blockedUntil) - Date.now()) / 60000)
+            orderFeedback.value = `Du är för full. Drick ett glas vatten och försök igen om ca ${minutesLeft} minut(er).`
+            orderConfirmed.value = false
+            setTimeout(() => {
+                orderFeedback.value = ''
+                closeOrderModal()
+            }, 3000)
+            return
+        }
+
+
+
+        // Hämta antal tidigare beställningar
+        const { count, error: countError } = await supabase
+            .from('orders')
+            .select('*', { count: 'exact', head: true })
+            .eq('customer', customerName.value)
+
+        if (countError) {
+            alert('Kunde inte kontrollera tidigare beställningar.')
+            return
+        }
+        // Kontrollera tid för första beställning
+        if (count !== null && count > 0) {
+            const { data: firstOrder, error: firstOrderError } = await supabase
+                .from('orders')
+                .select('created_at')
+                .eq('customer', customerName.value)
+                .order('created_at', { ascending: true })
+                .limit(1)
+
+            if (firstOrderError || !firstOrder?.[0]) {
+                console.warn('Kunde inte hämta första beställningens tid')
+            } else {
+                const firstOrderTime = new Date(firstOrder[0].created_at).getTime()
+                const now = Date.now()
+                const THIRTY_MINUTES = 30 * 60 * 1000
+
+                if (now - firstOrderTime < THIRTY_MINUTES) {
+                    const minutesLeft = Math.ceil((THIRTY_MINUTES - (now - firstOrderTime)) / 60000)
+                    orderFeedback.value = `Du måste vänta ${minutesLeft} minut(er) innan du kan beställa igen.`
+                    orderConfirmed.value = false
+                    setTimeout(() => {
+                        orderFeedback.value = ''
+                        closeOrderModal()
+                    }, 3000)
+                    return
+                }
+            }
+        }
+        if (count !== null && count > 1) {
+            // Visa frågan i stället
+            currentQuestion.value = questions[Math.floor(Math.random() * questions.length)]
+            selectedAnswer.value = ''
+            showOrderModal.value = false
+            showQuestionModal.value = true
+            return
+        }
+
+        await finalizeOrder()
+    }
+
 
 
 </script>
